@@ -3,7 +3,7 @@
 
   var Pipe = ast.Pipe;
   var Command = ast.Command;
-  var CommandPart = ast.CommandPart;
+  var Part = ast.Part;
 }
 
 expression
@@ -27,7 +27,7 @@ command
 
 commandPart
  = text:commandLetter+ {
-   return new CommandPart(text.join(""));
+   return new Part(text.join(""));
  }
 
 commandLetter

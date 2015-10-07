@@ -18,8 +18,8 @@ Pipe.prototype.dump = function () {
     ")";
 };
 
-// Command is an ordered collection of (one or more) "parts", which can be CommandParts or inner
-// PipeSequences.
+// Command is an ordered collection of (one or more) "parts", which can be Parts or inner
+// Pipes.
 var Command = exports.Command = function (parts) {
   this.parts = parts;
 };
@@ -52,11 +52,11 @@ Command.prototype.dump = function () {
     ")";
 };
 
-// CommandPart is a part of a command that will be used literally within its parent Command.
-var CommandPart = exports.CommandPart = function (text) {
+// Part is a part of a command that will be used literally within its parent Command.
+var Part = exports.Part = function (text) {
   this.text = text;
 };
 
-CommandPart.prototype.dump = function () {
-  return "(CommandPart [" + this.text + "])";
+Part.prototype.dump = function () {
+  return "(Part [" + this.text + "])";
 };

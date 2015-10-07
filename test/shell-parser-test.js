@@ -13,16 +13,16 @@ describe("shellParser", function () {
   describe("plain commands", function () {
 
     it("passes commands with no special shell concepts as-is", function () {
-      parsesAs("@hubot pug me", "(Pipe (Command (CommandPart [@hubot pug me])))");
+      parsesAs("@hubot pug me", "(Pipe (Command (Part [@hubot pug me])))");
     });
 
     it("accepts ( in a normal command", function () {
-      var expected = "(Pipe (Command (CommandPart [hubot echo this ( should work])))";
+      var expected = "(Pipe (Command (Part [hubot echo this ( should work])))";
       parsesAs("hubot echo this ( should work", expected)
     });
 
     it("accepts $ in a normal command", function () {
-      var expected = "(Pipe (Command (CommandPart [hubot echo this $ should work])))";
+      var expected = "(Pipe (Command (Part [hubot echo this $ should work])))";
       parsesAs("hubot echo this $ should work", expected)
     });
 
@@ -34,9 +34,9 @@ describe("shellParser", function () {
       var input = "@hubot echo $(@hubot pug me) is a pug image";
 
       var expected = "(Pipe (Command " +
-        "(CommandPart [@hubot echo ]) " +
-        "(Pipe (Command (CommandPart [@hubot pug me]))) " +
-        "(CommandPart [ is a pug image])))";
+        "(Part [@hubot echo ]) " +
+        "(Pipe (Command (Part [@hubot pug me]))) " +
+        "(Part [ is a pug image])))";
       parsesAs(input, expected);
     });
 
@@ -44,10 +44,10 @@ describe("shellParser", function () {
       var input = "hubot echo $(hubot echo one) and $(hubot echo two)";
 
       var expected = "(Pipe (Command " +
-        "(CommandPart [hubot echo ]) " +
-        "(Pipe (Command (CommandPart [hubot echo one]))) " +
-        "(CommandPart [ and ]) " +
-        "(Pipe (Command (CommandPart [hubot echo two])))" +
+        "(Part [hubot echo ]) " +
+        "(Pipe (Command (Part [hubot echo one]))) " +
+        "(Part [ and ]) " +
+        "(Pipe (Command (Part [hubot echo two])))" +
         "))";
 
       parsesAs(input, expected);
@@ -57,11 +57,11 @@ describe("shellParser", function () {
       var input = "hubot echo 1 $(hubot echo 2 $(hubot echo 3 foo))";
 
       var expected = "(Pipe (Command " +
-        "(CommandPart [hubot echo 1 ]) " +
+        "(Part [hubot echo 1 ]) " +
         "(Pipe (Command " +
-          "(CommandPart [hubot echo 2 ]) " +
+          "(Part [hubot echo 2 ]) " +
           "(Pipe (Command " +
-            "(CommandPart [hubot echo 3 foo])" +
+            "(Part [hubot echo 3 foo])" +
             "))" +
           "))" +
         "))";
@@ -72,8 +72,8 @@ describe("shellParser", function () {
       var input = "$(hubot echo hubot echo) yep";
 
       var expected = "(Pipe (Command " +
-          "(Pipe (Command (CommandPart [hubot echo hubot echo]))) " +
-          "(CommandPart [ yep])" +
+          "(Pipe (Command (Part [hubot echo hubot echo]))) " +
+          "(Part [ yep])" +
         "))";
       parsesAs(input, expected);
     });
@@ -82,8 +82,8 @@ describe("shellParser", function () {
       var input = "hubot echo $(hubot echo yes)";
 
       var expected = "(Pipe (Command " +
-          "(CommandPart [hubot echo ]) " +
-          "(Pipe (Command (CommandPart [hubot echo yes])))" +
+          "(Part [hubot echo ]) " +
+          "(Pipe (Command (Part [hubot echo yes])))" +
         "))";
       parsesAs(input, expected);
     });
@@ -96,9 +96,9 @@ describe("shellParser", function () {
       var input = "hubot echo end | hubot echo middle | hubot echo beginning";
 
       var expected = "(Pipe " +
-          "(Command (CommandPart [hubot echo end ])) " +
-          "(Command (CommandPart [hubot echo middle ])) " +
-          "(Command (CommandPart [hubot echo beginning]))" +
+          "(Command (Part [hubot echo end ])) " +
+          "(Command (Part [hubot echo middle ])) " +
+          "(Command (Part [hubot echo beginning]))" +
         ")";
       parsesAs(input, expected);
     });
@@ -111,10 +111,10 @@ describe("shellParser", function () {
       var input = "hubot echo $(hubot echo end | hubot echo beginning)";
 
       var expected = "(Pipe (Command " +
-          "(CommandPart [hubot echo ]) " +
+          "(Part [hubot echo ]) " +
           "(Pipe " +
-            "(Command (CommandPart [hubot echo end ])) " +
-            "(Command (CommandPart [hubot echo beginning]))" +
+            "(Command (Part [hubot echo end ])) " +
+            "(Command (Part [hubot echo beginning]))" +
           ")" +
         "))";
       parsesAs(input, expected);
@@ -125,13 +125,13 @@ describe("shellParser", function () {
 
       var expected = "(Pipe " +
           "(Command " +
-            "(CommandPart [hubot echo ]) " +
-            "(Pipe (Command (CommandPart [hubot echo part one]))) " +
-            "(CommandPart [ ])" +
+            "(Part [hubot echo ]) " +
+            "(Pipe (Command (Part [hubot echo part one]))) " +
+            "(Part [ ])" +
           ") " +
           "(Command " +
-            "(Pipe (Command (CommandPart [hubot echo hubot]))) " +
-            "(CommandPart [ echo part two])" +
+            "(Pipe (Command (Part [hubot echo hubot]))) " +
+            "(Part [ echo part two])" +
           ")" +
         ")";
       parsesAs(input, expected);
