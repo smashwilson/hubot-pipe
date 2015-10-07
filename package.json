@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "genparser": "pegjs src/shell-parser.pegjs",
-    "test": "npm genparser && mocha"
+    "test": "npm run genparser && mocha"
   },
   "keywords": [
     "hubot",
