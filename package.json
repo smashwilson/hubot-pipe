@@ -1,0 +1,29 @@
+{
+  "name": "hubot-shell",
+  "version": "0.0.1",
+  "description": "Put some shell in your Hubot",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "hubot",
+    "shell"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/smashwilson/hubot-shell.git"
+  },
+  "bugs": {
+    "url": "https://github.com/smashwilson/hubot-shell/issues"
+  },
+  "author": "Ash Wilson <smashwilson@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "mocha": "^2.3.3"
+  },
+  "dependencies": {
+    "pegjs": "^0.9.0"
+  }
+}
