@@ -70,10 +70,29 @@ describe("shellParser", function () {
 
   });
 
-  it("identifies a pipe sequence");
+  describe("pipes", function () {
 
-  it("parses a pipe within a subshell");
+    it("identifies a pipe sequence", function () {
+      var input = "hubot echo end | hubot echo middle | hubot echo beginning";
 
-  it("parses a subshell within a pipe");
+      var expected = "(PipeSequence " +
+          "(Command (CommandPart [hubot echo end ])) " +
+          "(Command (CommandPart [hubot echo middle ])) " +
+          "(Command (CommandPart [hubot echo beginning]))" +
+        ")";
+      parsesAs(input, expected);
+    });
+
+  });
+
+  describe("all together now", function () {
+
+    it("parses a pipe within a subshell");
+
+    it("parses a subshell within a pipe");
+
+    it("parses a mixture of subshells and pipes");
+
+  });
 
 });

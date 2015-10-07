@@ -10,11 +10,11 @@ expression
  = only:pipeSequence { return only; }
 
 pipeSequence
- = left:command+ "|" right:pipeSequence {
+ = left:command [ \t]* "|" [ \t]* right:pipeSequence {
    return right.prefixedWith(left);
  }
- / only:command+ {
-   return new PipeSequence(only);
+ / only:command {
+   return new PipeSequence([only]);
  }
 
 command
