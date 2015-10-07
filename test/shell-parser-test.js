@@ -68,6 +68,26 @@ describe("shellParser", function () {
       parsesAs(input, expected);
     });
 
+    it("parses subshells at the command start", function () {
+      var input = "$(hubot echo hubot echo) yep";
+
+      var expected = "(PipeSequence (Command " +
+          "(PipeSequence (Command (CommandPart [hubot echo hubot echo]))) " +
+          "(CommandPart [ yep])" +
+        "))";
+      parsesAs(input, expected);
+    });
+
+    it("parses subshells at the command end", function () {
+      var input = "hubot echo $(hubot echo yes)";
+
+      var expected = "(PipeSequence (Command " +
+          "(CommandPart [hubot echo ]) " +
+          "(PipeSequence (Command (CommandPart [hubot echo yes])))" +
+        "))";
+      parsesAs(input, expected);
+    });
+
   });
 
   describe("pipes", function () {
@@ -87,11 +107,35 @@ describe("shellParser", function () {
 
   describe("all together now", function () {
 
-    it("parses a pipe within a subshell");
+    it("parses a pipe within a subshell", function () {
+      var input = "hubot echo $(hubot echo end | hubot echo beginning)";
 
-    it("parses a subshell within a pipe");
+      var expected = "(PipeSequence (Command " +
+          "(CommandPart [hubot echo ]) " +
+          "(PipeSequence " +
+            "(Command (CommandPart [hubot echo end ])) " +
+            "(Command (CommandPart [hubot echo beginning]))" +
+          ")" +
+        "))";
+      parsesAs(input, expected);
+    });
 
-    it("parses a mixture of subshells and pipes");
+    it("parses a subshell within a pipe", function () {
+      var input = "hubot echo $(hubot echo part one) | $(hubot echo hubot) echo part two";
+
+      var expected = "(PipeSequence " +
+          "(Command " +
+            "(CommandPart [hubot echo ]) " +
+            "(PipeSequence (Command (CommandPart [hubot echo part one]))) " +
+            "(CommandPart [ ])" +
+          ") " +
+          "(Command " +
+            "(PipeSequence (Command (CommandPart [hubot echo hubot]))) " +
+            "(CommandPart [ echo part two])" +
+          ")" +
+        ")";
+      parsesAs(input, expected);
+    });
 
   });
 

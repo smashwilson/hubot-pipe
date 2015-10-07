@@ -26,7 +26,11 @@ var Command = exports.Command = function (parts) {
 
 Command.assemble = function (before, inner, after) {
   if (after !== null) {
-    return after.prefixedWith(inner).prefixedWith(before);
+    var cmd = after.prefixedWith(inner);
+    if (before !== null) {
+      cmd = cmd.prefixedWith(before);
+    }
+    return cmd;
   }
 
   var parts = [];

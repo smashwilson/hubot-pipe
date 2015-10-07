@@ -10,7 +10,7 @@ expression
  = only:pipeSequence { return only; }
 
 pipeSequence
- = left:command [ \t]* "|" [ \t]* right:pipeSequence {
+ = left:command "|" [ \t]* right:pipeSequence {
    return right.prefixedWith(left);
  }
  / only:command {
