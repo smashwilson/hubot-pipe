@@ -16,11 +16,20 @@ describe("shellParser", function () {
       parsesAs("@hubot pug me", "(PipeSequence (Command (CommandPart [@hubot pug me])))");
     });
 
-    it("accepts ( in a normal command");
+    it("accepts ( in a normal command", function () {
+      var expected = "(PipeSequence (Command (CommandPart [hubot echo this ( should work])))";
+      parsesAs("hubot echo this ( should work", expected)
+    });
 
-    it("accepts $ in a normal command");
+    it("accepts $ in a normal command", function () {
+      var expected = "(PipeSequence (Command (CommandPart [hubot echo this $ should work])))";
+      parsesAs("hubot echo this $ should work", expected)
+    });
 
-    it("accepts ) in a normal command");
+    it("accepts ) in a normal command", function () {
+      var expected = "(PipeSequence (Command (CommandPart [hubot echo this ) should work])))";
+      parsesAs("hubot echo this ) should work", expected)
+    });
 
   });
 

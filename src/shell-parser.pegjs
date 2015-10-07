@@ -26,6 +26,10 @@ command
  }
 
 commandPart
- = text:[^$|)]+ {
+ = text:commandLetter+ {
    return new CommandPart(text.join(""));
  }
+
+commandLetter
+ = [^$|)]
+ / "$" ! "(" { return "$"; }
