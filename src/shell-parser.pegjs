@@ -26,6 +26,6 @@ command
  }
 
 commandPart
- = text:.+ {
+ = text:[^$|)]+ {
    return new CommandPart(text.join(""));
  }

@@ -14,7 +14,7 @@ PipeSequence.prototype.prefixedWith = function (command) {
 
 PipeSequence.prototype.dump = function () {
   return "(PipeSequence " +
-    this.seq.map(function (p) { return p.dump(); }).join(" | ") +
+    this.seq.map(function (p) { return p.dump(); }).join(" ") +
     ")";
 };
 
@@ -44,7 +44,7 @@ Command.prototype.prefixedWith = function (expr) {
 
 Command.prototype.dump = function () {
   return "(Command " + 
-    this.parts.map(function (p) { return p.dump() }) +
+    this.parts.map(function (p) { return p.dump() }).join(" ") +
     ")";
 };
 

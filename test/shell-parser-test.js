@@ -11,7 +11,15 @@ describe("shell-parser", function () {
     expect(expr.dump()).to.equal("(PipeSequence (Command (CommandPart [@hubot pug me])))");
   });
 
-  it("identifies subshell invocations");
+  it("identifies subshell invocations", function () {
+    var expr = shellParser.parse("@hubot echo $(@hubot pug me) is a pug image");
+
+    var expected = "(PipeSequence (Command " +
+      "(CommandPart [@hubot echo ]) " +
+      "(PipeSequence (Command (CommandPart [@hubot pug me]))) " +
+      "(CommandPart [ is a pug image])))";
+    expect(expr.dump()).to.equal(expected);
+  });
 
   it("identifies a pipe sequence");
 
