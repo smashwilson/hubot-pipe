@@ -2,18 +2,18 @@
 
 // Abstract syntax tree for a parsed Hubot command.
 
-// PipeSequence is an ordered collection of (one or more) Commands, separated by pipes ("|").
-var PipeSequence = exports.PipeSequence = function (seq) {
+// Pipe is an ordered collection of (one or more) Commands, separated by pipes ("|").
+var Pipe = exports.Pipe = function (seq) {
   this.seq = seq || [];
 };
 
-PipeSequence.prototype.prefixedWith = function (command) {
+Pipe.prototype.prefixedWith = function (command) {
   this.seq.unshift(command);
   return this;
 };
 
-PipeSequence.prototype.dump = function () {
-  return "(PipeSequence " +
+Pipe.prototype.dump = function () {
+  return "(Pipe " +
     this.seq.map(function (p) { return p.dump(); }).join(" ") +
     ")";
 };

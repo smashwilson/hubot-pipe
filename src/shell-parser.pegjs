@@ -1,20 +1,20 @@
 {
   var ast = require('./ast');
 
-  var PipeSequence = ast.PipeSequence;
+  var Pipe = ast.Pipe;
   var Command = ast.Command;
   var CommandPart = ast.CommandPart;
 }
 
 expression
- = only:pipeSequence { return only; }
+ = only:pipe { return only; }
 
-pipeSequence
- = left:command "|" [ \t]* right:pipeSequence {
+pipe
+ = left:command "|" [ \t]* right:pipe {
    return right.prefixedWith(left);
  }
  / only:command {
-   return new PipeSequence([only]);
+   return new Pipe([only]);
  }
 
 command
