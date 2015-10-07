@@ -1,5 +1,9 @@
 {
   var ast = require('./ast');
+
+  var PipeSequence = ast.PipeSequence;
+  var Command = ast.Command;
+  var CommandPart = ast.CommandPart;
 }
 
 expression
@@ -10,7 +14,7 @@ pipeSequence
    return right.prefixedWith(left);
  }
  / only:command+ {
-   return new PipeSequence([only]);
+   return new PipeSequence(only);
  }
 
 command
@@ -23,5 +27,5 @@ command
 
 commandPart
  = text:.+ {
-   return new CommandPart(text);
+   return new CommandPart(text.join(""));
  }

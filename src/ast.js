@@ -1,7 +1,9 @@
+"use strict";
+
 // Abstract syntax tree for a parsed Hubot command.
 
-// PipeSequence is an ordered collection of (one or more) actions, separated by pipes ("|").
-export.PipeSequence = PipeSequence = function (seq) {
+// PipeSequence is an ordered collection of (one or more) Commands, separated by pipes ("|").
+var PipeSequence = exports.PipeSequence = function (seq) {
   this.seq = seq || [];
 };
 
@@ -10,9 +12,15 @@ PipeSequence.prototype.prefixedWith = function (command) {
   return this;
 };
 
+PipeSequence.prototype.dump = function () {
+  return "(PipeSequence " +
+    this.seq.map(function (p) { return p.dump(); }).join(" | ") +
+    ")";
+};
+
 // Command is an ordered collection of (one or more) "parts", which can be CommandParts or inner
 // PipeSequences.
-export.Command = Command = function (parts) {
+var Command = exports.Command = function (parts) {
   this.parts = parts;
 };
 
@@ -34,7 +42,17 @@ Command.prototype.prefixedWith = function (expr) {
   return this;
 };
 
+Command.prototype.dump = function () {
+  return "(Command " + 
+    this.parts.map(function (p) { return p.dump() }) +
+    ")";
+};
+
 // CommandPart is a part of a command that will be used literally within its parent Command.
-export.CommandPart = CommandPart = function (text) {
+var CommandPart = exports.CommandPart = function (text) {
   this.text = text;
+};
+
+CommandPart.prototype.dump = function () {
+  return "(CommandPart [" + this.text + "])";
 };
