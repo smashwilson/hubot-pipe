@@ -43,8 +43,8 @@ Command.prototype.prefixedWith = function (expr) {
 };
 
 Command.prototype.dump = function () {
-  return "(Command " + 
-    this.parts.map(function (p) { return p.dump() }).join(" ") +
+  return "(Command " +
+    this.parts.map(function (p) { return p.dump(); }).join(" ") +
     ")";
 };
 
