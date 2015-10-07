@@ -4,7 +4,8 @@
   "description": "Put some shell in your Hubot",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha"
+    "genparser": "pegjs src/shell-parser.pegjs",
+    "test": "npm genparser && mocha"
   },
   "keywords": [
     "hubot",
