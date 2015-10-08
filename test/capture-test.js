@@ -18,10 +18,13 @@ describe("capture", function () {
   });
 
   it("patches #send in the robot's adapter", function () {
+    // Prevent the capture from being "complete"
+    capture.patchedRobot('other-id');
+
     var patched = capture.patchedRobot('the-id');
 
     var result = patched.adapter.send({}, "something");
-    expect(capture.captured['the-id']).to.equal("something");
+    expect(capture.captured['the-id']).to.deep.equal(["something"]);
   });
 
   it("invokes its completion callback once all results are in", function () {
@@ -35,11 +38,11 @@ describe("capture", function () {
 
     expect(parts).to.be.null;
 
-    patched0.send("first part came in");
+    patched0.adapter.send({}, "first part came in");
     expect(parts).to.be.null;
 
-    patched1.send("second part came in");
-    expect(parts).to.equal({
+    patched1.adapter.send({}, "second part came in");
+    expect(parts).to.deep.equal({
       id0: "first part came in",
       id1: "second part came in"
     });

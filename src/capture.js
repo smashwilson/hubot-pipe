@@ -3,7 +3,6 @@
 var Capture = module.exports = function (robot) {
   this.robot = robot;
   this.captured = {};
-  this.idsRemaining = [];
   this.completeCallback = function () {};
 };
 
@@ -15,11 +14,10 @@ Capture.prototype.patchedRobot = function (id) {
   var self = this;
   var patchedAdapter = Object.create(this.robot.adapter);
 
-  this.idsRemaining.push(id);
+  this.captured[id] = [];
 
   patchedAdapter.send = function () {
     var strings = Array.prototype.slice.call(arguments, 1);
-    console.log("got: " + strings.join(", "));
     strings.forEach(function (arg) {
       self._capture(id, arg);
     });
@@ -32,17 +30,24 @@ Capture.prototype.patchedRobot = function (id) {
 };
 
 Capture.prototype._capture = function (id, msg) {
-  this.captured[id] = msg;
-
-  var ind = this.idsRemaining.indexOf(id);
-  if (ind === -1) {
-
-  }
-
+  this.captured[id].push(msg);
+  this._checkCompletion();
 };
 
+Capture.prototype._isComplete = function () {
+  return ! Object.keys(this.captured).some(function (id) {
+    return this.captured[id].length === 0;
+  }.bind(this));
+}
+
 Capture.prototype._checkCompletion = function () {
-  if (this.idsRemaining.length === 0) {
-    this.completeCallback(this.captured);
+  while (this._isComplete()) {
+    var result = {};
+
+    Object.keys(this.captured).forEach(function (id) {
+      result[id] = this.captured[id].shift();
+    }.bind(this));
+
+    this.completeCallback(result);
   }
 };
