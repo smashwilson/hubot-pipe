@@ -2,6 +2,8 @@
 
 // Abstract syntax tree for a parsed Hubot command.
 
+var Capture = require('./capture');
+
 // Pipe is an ordered collection of (one or more) Commands, separated by pipes ("|").
 var Pipe = exports.Pipe = function (seq) {
   this.seq = seq || [];
@@ -10,6 +12,24 @@ var Pipe = exports.Pipe = function (seq) {
 Pipe.prototype.prefixedWith = function (command) {
   this.seq.unshift(command);
   return this;
+};
+
+Pipe.prototype.evaluate = function (robot, callback) {
+  var output = "";
+
+  var capture = new Capture(robot);
+
+  function makeCompletionHandler(id) {
+    return function () {
+      var patched = capture.patchedRobot("id-" + id);
+    };
+  };
+
+  this.seq.forEach(function (cmd) {
+    output = cmd.evaluate();
+  });
+
+  return output;
 };
 
 Pipe.prototype.dump = function () {
@@ -46,6 +66,17 @@ Command.prototype.prefixedWith = function (expr) {
   return this;
 };
 
+Command.prototype.evaluate = function (robot) {
+  console.log("Evaluating command: " + this.dump());
+  var input = "";
+
+  for (var i = 0; i < this.parts.length; i++) {
+    input += this.parts[i].evaluate(robot);
+  }
+
+  console.log("Execute command: [" + input + "]");
+};
+
 Command.prototype.dump = function () {
   return "(Command " +
     this.parts.map(function (p) { return p.dump(); }).join(" ") +
@@ -56,6 +87,10 @@ Command.prototype.dump = function () {
 var Part = exports.Part = function (text) {
   this.text = text;
 };
+
+Part.prototype.evaluate = function (robot) {
+  return this.text;
+}
 
 Part.prototype.dump = function () {
   return "(Part [" + this.text + "])";
