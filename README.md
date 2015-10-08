@@ -1,4 +1,4 @@
-# Hubot Shell
+# Hubot Pipe
 
 Introduce command piping and subshells to your Hubot commands. Coming soon!
 
