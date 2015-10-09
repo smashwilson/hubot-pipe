@@ -1,5 +1,7 @@
 # Hubot Pipe
 
+[![Build Status](https://travis-ci.org/smashwilson/hubot-pipe.svg?branch=master)](https://travis-ci.org/smashwilson/hubot-pipe)
+
 Introduce command piping and subshells to your Hubot commands. Coming soon!
 
 ```
