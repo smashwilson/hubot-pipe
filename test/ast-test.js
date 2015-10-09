@@ -64,3 +64,22 @@ describe("Command", function () {
   });
 
 });
+
+describe("Pipe", function () {
+
+  it("evaluates its commands from left to right, appending output to the next's input", function () {
+    var robot = new MockRobot();
+    var messenger = makeMessenger();
+
+    var p = new Pipe([
+      new Command([new Part("a0 "), new Part("a1")]),
+      new Command([new Part("b0 "), new Part("b1 ")]),
+      new Command([new Part("c0 "), new Part("c1 ")])
+    ]);
+
+    p.evaluate(robot, messenger);
+
+    expect(robot.sent).to.deep.equal(["received {c0 c1 received {b0 b1 received {a0 a1}}}"]);
+  });
+
+});

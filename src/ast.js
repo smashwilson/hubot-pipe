@@ -5,22 +5,64 @@
 var Capture = require('./capture');
 
 // Pipe is an ordered collection of (one or more) Commands, separated by pipes ("|").
-var Pipe = exports.Pipe = function (seq) {
-  this.seq = seq || [];
+var Pipe = exports.Pipe = function (commands) {
+  this.commands = commands || [];
 };
 
 Pipe.prototype.prefixedWith = function (command) {
-  this.seq.unshift(command);
+  this.commands.unshift(command);
   return this;
 };
 
-Pipe.prototype.evaluate = function (robot, callback) {
-  //
+Pipe.prototype.evaluate = function (robot, messenger) {
+  var self = this;
+  var finalCommandIndex = this.commands.length - 1;
+
+  if (this.commands.length === 0) {
+    return;
+  }
+
+  function handleCommand (suffix, i) {
+    if (i < finalCommandIndex) {
+      handleIntermediateCommand(suffix, i);
+    } else {
+      handleFinalCommand(suffix);
+    }
+  }
+
+  function handleIntermediateCommand (suffix, i) {
+    var capture = new Capture(robot);
+    var command = self.commands[i];
+
+    if (suffix !== "") {
+      command = command.suffixedWith(new Part(suffix));
+    }
+
+    var patched = capture.patchedRobot(0);
+    command.evaluate(patched, messenger);
+
+    capture.onComplete(function (err, results) {
+      if (err) return;
+
+      var prefix = results.join("");
+      handleCommand(prefix, i + 1);
+    });
+  };
+
+  function handleFinalCommand (suffix) {
+    var command = self.commands[finalCommandIndex];
+
+    command.suffixedWith(new Part(suffix));
+
+    command.evaluate(robot, messenger);
+  };
+
+  handleCommand("", 0);
 };
 
 Pipe.prototype.dump = function () {
   return "(Pipe " +
-    this.seq.map(function (p) { return p.dump(); }).join(" ") +
+    this.commands.map(function (p) { return p.dump(); }).join(" ") +
     ")";
 };
 
@@ -52,9 +94,12 @@ Command.prototype.prefixedWith = function (expr) {
   return this;
 };
 
-Command.prototype.evaluate = function (robot, messenger) {
-  console.log("Evaluating command: " + this.dump());
+Command.prototype.suffixedWith = function (expr) {
+  this.parts.push(expr);
+  return this;
+};
 
+Command.prototype.evaluate = function (robot, messenger) {
   var capture = new Capture(robot);
 
   // Dispatch part evaluation to patched robots.
