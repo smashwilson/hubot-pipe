@@ -2,19 +2,67 @@
 
 // Abstract syntax tree for a parsed Hubot command.
 
+var Capture = require('./capture');
+
 // Pipe is an ordered collection of (one or more) Commands, separated by pipes ("|").
-var Pipe = exports.Pipe = function (seq) {
-  this.seq = seq || [];
+var Pipe = exports.Pipe = function (commands) {
+  this.commands = commands || [];
 };
 
 Pipe.prototype.prefixedWith = function (command) {
-  this.seq.unshift(command);
+  this.commands.unshift(command);
   return this;
+};
+
+Pipe.prototype.evaluate = function (robot, messenger) {
+  var self = this;
+  var finalCommandIndex = this.commands.length - 1;
+
+  if (this.commands.length === 0) {
+    return;
+  }
+
+  function handleCommand (suffix, i) {
+    if (i < finalCommandIndex) {
+      handleIntermediateCommand(suffix, i);
+    } else {
+      handleFinalCommand(suffix);
+    }
+  }
+
+  function handleIntermediateCommand (suffix, i) {
+    var capture = new Capture(robot);
+    var command = self.commands[i];
+
+    if (suffix !== "") {
+      command = command.suffixedWith(new Part(suffix));
+    }
+
+    var patched = capture.patchedRobot(0);
+    command.evaluate(patched, messenger);
+
+    capture.onComplete(function (err, results) {
+      if (err) return;
+
+      var prefix = results.join("");
+      handleCommand(prefix, i + 1);
+    });
+  };
+
+  function handleFinalCommand (suffix) {
+    var command = self.commands[finalCommandIndex];
+
+    command.suffixedWith(new Part(suffix));
+
+    command.evaluate(robot, messenger);
+  };
+
+  handleCommand("", 0);
 };
 
 Pipe.prototype.dump = function () {
   return "(Pipe " +
-    this.seq.map(function (p) { return p.dump(); }).join(" ") +
+    this.commands.map(function (p) { return p.dump(); }).join(" ") +
     ")";
 };
 
@@ -46,6 +94,30 @@ Command.prototype.prefixedWith = function (expr) {
   return this;
 };
 
+Command.prototype.suffixedWith = function (expr) {
+  this.parts.push(expr);
+  return this;
+};
+
+Command.prototype.evaluate = function (robot, messenger) {
+  var capture = new Capture(robot);
+
+  // Dispatch part evaluation to patched robots.
+  this.parts.forEach(function (part, i) {
+    var patched = capture.patchedRobot(i);
+    part.evaluate(patched, messenger);
+  });
+
+  // Fire each time all parts have some output we can use
+  capture.onComplete(function (err, results) {
+    if (err) return callback(err);
+
+    // Process the assembled output of our constituent parts as a simulated TextMessage
+    var msg = messenger.create(results.join(""));
+    robot.receive(msg);
+  });
+};
+
 Command.prototype.dump = function () {
   return "(Command " +
     this.parts.map(function (p) { return p.dump(); }).join(" ") +
@@ -56,6 +128,11 @@ Command.prototype.dump = function () {
 var Part = exports.Part = function (text) {
   this.text = text;
 };
+
+Part.prototype.evaluate = function (robot, messenger) {
+  // Simulate direct output of this part, verbatim.
+  robot.adapter.send(messenger.makeEnvelope(), this.text);
+}
 
 Part.prototype.dump = function () {
   return "(Part [" + this.text + "])";

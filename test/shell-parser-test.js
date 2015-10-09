@@ -1,3 +1,5 @@
+"use strict";
+
 var expect = require('chai').expect;
 
 var shellParser = require('../src/shell-parser');
