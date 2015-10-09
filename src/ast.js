@@ -15,21 +15,7 @@ Pipe.prototype.prefixedWith = function (command) {
 };
 
 Pipe.prototype.evaluate = function (robot, callback) {
-  var output = "";
-
-  var capture = new Capture(robot);
-
-  function makeCompletionHandler(id) {
-    return function () {
-      var patched = capture.patchedRobot("id-" + id);
-    };
-  };
-
-  this.seq.forEach(function (cmd) {
-    output = cmd.evaluate();
-  });
-
-  return output;
+  //
 };
 
 Pipe.prototype.dump = function () {
@@ -66,15 +52,25 @@ Command.prototype.prefixedWith = function (expr) {
   return this;
 };
 
-Command.prototype.evaluate = function (robot) {
+Command.prototype.evaluate = function (robot, messenger) {
   console.log("Evaluating command: " + this.dump());
-  var input = "";
 
-  for (var i = 0; i < this.parts.length; i++) {
-    input += this.parts[i].evaluate(robot);
-  }
+  var capture = new Capture(robot);
 
-  console.log("Execute command: [" + input + "]");
+  // Dispatch part evaluation to patched robots.
+  this.parts.forEach(function (part, i) {
+    var patched = capture.patchedRobot(i);
+    part.evaluate(patched, messenger);
+  });
+
+  // Fire each time all parts have some output we can use
+  capture.onComplete(function (err, results) {
+    if (err) return callback(err);
+
+    // Process the assembled output of our constituent parts as a simulated TextMessage
+    var msg = messenger.create(results.join(""));
+    robot.receive(msg);
+  });
 };
 
 Command.prototype.dump = function () {
@@ -88,8 +84,9 @@ var Part = exports.Part = function (text) {
   this.text = text;
 };
 
-Part.prototype.evaluate = function (robot) {
-  return this.text;
+Part.prototype.evaluate = function (robot, messenger) {
+  // Simulate direct output of this part, verbatim.
+  robot.adapter.send(messenger.makeEnvelope(), this.text);
 }
 
 Part.prototype.dump = function () {
