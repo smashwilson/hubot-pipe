@@ -2,7 +2,7 @@
 
 var Capture = module.exports = function (robot) {
   this.robot = robot;
-  this.captured = {};
+  this.captured = [];
   this.completeCallback = function () {};
 };
 
@@ -35,17 +35,17 @@ Capture.prototype._capture = function (id, msg) {
 };
 
 Capture.prototype._isComplete = function () {
-  return ! Object.keys(this.captured).some(function (id) {
-    return this.captured[id].length === 0;
+  return ! this.captured.some(function (each) {
+    return each.length === 0;
   }.bind(this));
 }
 
 Capture.prototype._checkCompletion = function () {
   while (this._isComplete()) {
-    var result = {};
+    var result = [];
 
-    Object.keys(this.captured).forEach(function (id) {
-      result[id] = this.captured[id].shift();
+    this.captured.forEach(function (each, i) {
+      result[i] = each.shift();
     }.bind(this));
 
     this.completeCallback(result);
