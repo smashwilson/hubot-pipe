@@ -25,6 +25,7 @@ Capture.prototype.patchedRobot = function (id) {
   };
 
   var patchedRobot = Object.create(this.robot);
+  patchedRobot.__hubot_pipe_patched = true;
   patchedRobot.adapter = patchedAdapter;
 
   return patchedRobot;
