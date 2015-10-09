@@ -3,11 +3,12 @@
 var Capture = module.exports = function (robot) {
   this.robot = robot;
   this.captured = [];
-  this.completeCallback = function () {};
+  this.completeCallback = null;
 };
 
 Capture.prototype.onComplete = function (callback) {
   this.completeCallback = callback;
+  this._checkCompletion();
 };
 
 Capture.prototype.patchedRobot = function (id) {
@@ -35,19 +36,24 @@ Capture.prototype._capture = function (id, msg) {
 };
 
 Capture.prototype._isComplete = function () {
+  if (this.completeCallback === null) {
+    return false;
+  }
+
   return ! this.captured.some(function (each) {
     return each.length === 0;
-  }.bind(this));
+  });
 }
 
 Capture.prototype._checkCompletion = function () {
   while (this._isComplete()) {
     var result = [];
 
+    // TODO: this should actually handle permutations, somehow
     this.captured.forEach(function (each, i) {
       result[i] = each.shift();
     }.bind(this));
 
-    this.completeCallback(result);
+    this.completeCallback(null, result);
   }
 };

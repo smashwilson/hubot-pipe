@@ -32,7 +32,7 @@ describe("capture", function () {
     var patched1 = capture.patchedRobot(1);
 
     var parts = null;
-    capture.onComplete(function (p) {
+    capture.onComplete(function (err, p) {
       parts = p;
     });
 
@@ -46,6 +46,18 @@ describe("capture", function () {
       "first part came in",
       "second part came in"
     ]);
+  });
+
+  it("invokes the completion callback if results are already there", function () {
+    capture.patchedRobot(0).adapter.send({}, "one");
+    capture.patchedRobot(1).adapter.send({}, "two");
+
+    var parts = null;
+    capture.onComplete(function (err, p) {
+      parts = p;
+    });
+
+    expect(parts).to.deep.equal(["one", "two"]);
   });
 
 });
