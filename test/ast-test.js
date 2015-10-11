@@ -18,6 +18,8 @@ function MockRobot () {
       self.sent.push(string);
     }
   };
+
+  this.listeners = [];
 };
 
 MockRobot.prototype.receive = function (message) {

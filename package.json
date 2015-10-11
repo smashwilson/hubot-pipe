@@ -1,5 +1,5 @@
 {
-  "name": "hubot-shell",
+  "name": "hubot-pipe",
   "version": "0.0.1",
   "description": "Put some shell in your Hubot",
   "main": "src/index.js",

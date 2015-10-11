@@ -25,7 +25,15 @@ Capture.prototype.patchedRobot = function (id) {
   };
 
   var patchedRobot = Object.create(this.robot);
+  patchedRobot.__hubot_pipe_patched = true;
   patchedRobot.adapter = patchedAdapter;
+
+  // Patch out the robot reference in each registered Listener
+  patchedRobot.listeners = this.robot.listeners.map(function (listener) {
+    var patchedListener = Object.create(listener);
+    patchedListener.robot = patchedRobot;
+    return patchedListener;
+  });
 
   return patchedRobot;
 };
