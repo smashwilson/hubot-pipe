@@ -8,7 +8,8 @@ describe("capture", function () {
   var robot = {
     adapter: {
       send: function () { return "original"; }
-    }
+    },
+    listeners: []
   };
 
   var capture;
