@@ -61,4 +61,48 @@ describe("capture", function () {
     expect(parts).to.deep.equal(["one", "two"]);
   });
 
+  it("reinvokes the callback when new results arrive", function () {
+    var patched0 = capture.patchedRobot(0);
+    var patched1 = capture.patchedRobot(1);
+
+    var parts = null;
+    capture.onComplete(function (err, p) {
+      parts = p;
+    });
+
+    patched0.adapter.send({}, "aaa");
+    expect(parts).to.be.null;
+    patched1.adapter.send({}, "bbb");
+    expect(parts).to.deep.equal(["aaa", "bbb"]);
+    parts = null;
+
+    patched0.adapter.send({}, "ccc");
+    expect(parts).to.be.null;
+    patched1.adapter.send({}, "ddd");
+    expect(parts).to.deep.equal(["ccc", "ddd"]);
+  });
+
+  it("reuses output from static results over and over again", function () {
+    var patched0 = capture.patchedRobot(0);
+    var patched1 = capture.patchedRobot(1);
+
+    var parts = null;
+    capture.onComplete(function (err, p) {
+      parts = p;
+    });
+
+    patched0.adapter.send({static: true}, "aaa");
+    expect(parts).to.be.null;
+    patched1.adapter.send({}, "bbb");
+    expect(parts).to.deep.equal(["aaa", "bbb"]);
+    parts = null;
+
+    patched1.adapter.send({}, "ccc");
+    expect(parts).to.deep.equal(["aaa", "ccc"]);
+    parts = null;
+
+    patched1.adapter.send({}, "ddd");
+    expect(parts).to.deep.equal(["aaa", "ddd"]);
+  });
+
 });
