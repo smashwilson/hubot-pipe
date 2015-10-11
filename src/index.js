@@ -19,10 +19,12 @@ module.exports = function (robot) {
       expr.evaluate(patched, messenger);
 
       capture.onComplete(function (err, results) {
-        if (err) return;
-        message.text = results.join("");
+        if (err) {
+          console.error(err);
+          return;
+        };
 
-        next(done);
+        context.response.send(results.join(""));
       });
     } else {
       next(done);
