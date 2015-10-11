@@ -52,7 +52,9 @@ Pipe.prototype.evaluate = function (robot, messenger) {
   function handleFinalCommand (suffix) {
     var command = self.commands[finalCommandIndex];
 
-    command.suffixedWith(new Part(suffix));
+    if (suffix !== "") {
+      command = command.suffixedWith(new Part(suffix));
+    }
 
     command.evaluate(robot, messenger);
   };
