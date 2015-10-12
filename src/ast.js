@@ -95,13 +95,11 @@ Command.assemble = function (before, inner, after) {
 };
 
 Command.prototype.prefixedWith = function (expr) {
-  this.parts.unshift(expr);
-  return this;
+  return new Command([expr].concat(this.parts));
 };
 
 Command.prototype.suffixedWith = function (expr) {
-  this.parts.push(expr);
-  return this;
+  return new Command(this.parts.concat([expr]));
 };
 
 Command.prototype.evaluate = function (robot, messenger) {
