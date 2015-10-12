@@ -1,6 +1,6 @@
 {
   "name": "hubot-pipe",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Put some shell in your Hubot",
   "main": "src/index.js",
   "scripts": {
@@ -21,8 +21,6 @@
     "url": "https://github.com/smashwilson/hubot-pipe/issues"
   },
   "homepage": "https://github.com/smashwilson/hubot-pipe",
-  "author": "Ash Wilson <smashwilson@gmail.com>",
-  "license": "MIT",
   "devDependencies": {
     "chai": "^3.3.0",
     "mocha": "^2.3.3"
