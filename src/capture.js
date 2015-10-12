@@ -9,8 +9,8 @@ PipeOutput.prototype.isEmpty = function () {
 };
 
 PipeOutput.prototype.push = function (envelope, msg) {
-  if (envelope.static) {
-    throw new Error("Attempt to push static output onto a PipeOutput");
+  if (envelope.part) {
+    throw new Error("Attempt to push Part output onto a PipeOutput");
   }
 
   this.queue.push(msg);
@@ -45,7 +45,7 @@ EmptyOutput.prototype.isEmpty = function () {
 };
 
 EmptyOutput.prototype.push = function (envelope, msg) {
-  if (envelope.static) {
+  if (envelope.part) {
     return new PartOutput(msg);
   } else {
     return new PipeOutput(msg);

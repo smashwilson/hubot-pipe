@@ -83,7 +83,7 @@ describe("capture", function () {
     expect(parts).to.deep.equal(["ccc", "ddd"]);
   });
 
-  it("reuses output from static results over and over again", function () {
+  it("reuses output from part results over and over again", function () {
     var patched0 = capture.patchedRobot(0);
     var patched1 = capture.patchedRobot(1);
 
@@ -92,7 +92,7 @@ describe("capture", function () {
       parts = p;
     });
 
-    patched0.adapter.send({static: true}, "aaa");
+    patched0.adapter.send({part: true}, "aaa");
     expect(parts).to.be.null;
     patched1.adapter.send({}, "bbb");
     expect(parts).to.deep.equal(["aaa", "bbb"]);

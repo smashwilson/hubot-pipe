@@ -133,7 +133,7 @@ var Part = exports.Part = function (text) {
 
 Part.prototype.evaluate = function (robot, messenger) {
   // Simulate direct output of this part, verbatim.
-  robot.adapter.send(messenger.makeEnvelope(), this.text);
+  robot.adapter.send(messenger.makeEnvelope(true), this.text);
 }
 
 Part.prototype.dump = function () {
