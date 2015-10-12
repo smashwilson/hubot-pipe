@@ -25,7 +25,8 @@ describe("capture", function () {
     var patched = capture.patchedRobot(0);
 
     var result = patched.adapter.send({}, "something");
-    expect(capture.captured[0]).to.deep.equal(["something"]);
+    expect(capture.captured[0].isEmpty()).to.be.false;
+    expect(capture.captured[0].next()).to.equal("something");
   });
 
   it("invokes its completion callback once all results are in", function () {
