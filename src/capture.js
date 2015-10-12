@@ -22,6 +22,10 @@ PipeOutput.prototype.next = function () {
   return this.queue.shift();
 };
 
+PipeOutput.prototype.shouldContinue = function () {
+  return true;
+};
+
 function PartOutput (msg) {
   this.text = msg;
 };
@@ -36,6 +40,10 @@ PartOutput.prototype.push = function () {
 
 PartOutput.prototype.next = function () {
   return this.text;
+};
+
+PartOutput.prototype.shouldContinue = function () {
+  return false;
 };
 
 function EmptyOutput () {};
@@ -55,6 +63,10 @@ EmptyOutput.prototype.push = function (envelope, msg) {
 EmptyOutput.prototype.next = function () {
   throw new Error("Attempt to read output from an EmptyOutput");
 }
+
+EmptyOutput.prototype.shouldContinue = function () {
+  return false;
+};
 
 var Capture = module.exports = function (robot) {
   this.robot = robot;
@@ -119,5 +131,11 @@ Capture.prototype._checkCompletion = function () {
     }.bind(this));
 
     this.completeCallback(null, result);
+
+    // Terminate early if *all* components are Parts, and would otherwise continue producing output
+    // infinitely.
+    if (! this.captured.some(function (each) { return each.shouldContinue(); })) {
+      return ;
+    }
   }
 };
