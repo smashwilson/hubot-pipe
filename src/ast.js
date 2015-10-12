@@ -42,10 +42,13 @@ Pipe.prototype.evaluate = function (robot, messenger) {
     command.evaluate(patched, messenger);
 
     capture.onComplete(function (err, results) {
-      if (err) return;
+      if (err) {
+        console.error(err);
+        return;
+      }
 
-      var prefix = results.join("");
-      handleCommand(prefix, i + 1);
+      var suffix = results.join("");
+      handleCommand(suffix, i + 1);
     });
   };
 
