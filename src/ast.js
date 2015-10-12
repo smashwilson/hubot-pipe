@@ -35,7 +35,7 @@ Pipe.prototype.evaluate = function (robot, messenger) {
     var command = self.commands[i];
 
     if (suffix !== "") {
-      command = command.suffixedWith(new Part(suffix));
+      command = command.suffixedWith(new Part(" " + suffix));
     }
 
     var patched = capture.patchedRobot(0);
@@ -56,7 +56,7 @@ Pipe.prototype.evaluate = function (robot, messenger) {
     var command = self.commands[finalCommandIndex];
 
     if (suffix !== "") {
-      command = command.suffixedWith(new Part(suffix));
+      command = command.suffixedWith(new Part(" " + suffix));
     }
 
     command.evaluate(robot, messenger);
