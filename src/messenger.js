@@ -15,6 +15,11 @@ Messenger.prototype.create = function (text) {
   return m;
 };
 
-Messenger.prototype.makeEnvelope = function () {
-  return { room: this.message.room, user: this.message.user, message: this.message };
+Messenger.prototype.makeEnvelope = function (part) {
+  return {
+    part: part,
+    room: this.message.room,
+    user: this.message.user,
+    message: this.message
+  };
 }

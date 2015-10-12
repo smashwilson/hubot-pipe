@@ -42,10 +42,13 @@ Pipe.prototype.evaluate = function (robot, messenger) {
     command.evaluate(patched, messenger);
 
     capture.onComplete(function (err, results) {
-      if (err) return;
+      if (err) {
+        console.error(err);
+        return;
+      }
 
-      var prefix = results.join("");
-      handleCommand(prefix, i + 1);
+      var suffix = results.join("");
+      handleCommand(suffix, i + 1);
     });
   };
 
@@ -92,13 +95,11 @@ Command.assemble = function (before, inner, after) {
 };
 
 Command.prototype.prefixedWith = function (expr) {
-  this.parts.unshift(expr);
-  return this;
+  return new Command([expr].concat(this.parts));
 };
 
 Command.prototype.suffixedWith = function (expr) {
-  this.parts.push(expr);
-  return this;
+  return new Command(this.parts.concat([expr]));
 };
 
 Command.prototype.evaluate = function (robot, messenger) {
@@ -133,7 +134,7 @@ var Part = exports.Part = function (text) {
 
 Part.prototype.evaluate = function (robot, messenger) {
   // Simulate direct output of this part, verbatim.
-  robot.adapter.send(messenger.makeEnvelope(), this.text);
+  robot.adapter.send(messenger.makeEnvelope(true), this.text);
 }
 
 Part.prototype.dump = function () {
