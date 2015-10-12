@@ -5,7 +5,8 @@ var Messenger = module.exports = function (message) {
 };
 
 Messenger.isTextMessage = function (message) {
-  return message.constructor.name === 'TextMessage';
+  var cname = message.constructor.name;
+  return cname === 'TextMessage' || cname === 'SlackTextMessage';
 };
 
 Messenger.prototype.create = function (text) {
