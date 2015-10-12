@@ -5,19 +5,22 @@
   "main": "src/index.js",
   "scripts": {
     "genparser": "pegjs src/shell-parser.pegjs",
-    "test": "npm run genparser && mocha"
+    "test": "npm run genparser && mocha",
+    "prepublish": "npm run genparser"
   },
-  "keywords": [
-    "hubot",
-    "shell"
-  ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/smashwilson/hubot-shell.git"
+    "url": "https://github.com/smashwilson/hubot-pipe.git"
   },
+  "keywords": [
+    "hubot shell pipe subcommand unix"
+  ],
+  "author": "Ash Wilson <smashwilson@gmail.com>",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/smashwilson/hubot-shell/issues"
+    "url": "https://github.com/smashwilson/hubot-pipe/issues"
   },
+  "homepage": "https://github.com/smashwilson/hubot-pipe",
   "author": "Ash Wilson <smashwilson@gmail.com>",
   "license": "MIT",
   "devDependencies": {
