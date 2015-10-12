@@ -75,8 +75,8 @@ describe("Pipe", function () {
 
     var p = new Pipe([
       new Command([new Part("a0 "), new Part("a1")]),
-      new Command([new Part("b0 "), new Part("b1 ")]),
-      new Command([new Part("c0 "), new Part("c1 ")])
+      new Command([new Part("b0 "), new Part("b1")]),
+      new Command([new Part("c0 "), new Part("c1")])
     ]);
 
     p.evaluate(robot, messenger);
