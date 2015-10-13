@@ -27,11 +27,11 @@ pushbot> 0 1 2 3
 
 ## Installing
 
-1. Add `hubot-pipe` to your `package.json` with `npm install --save hubot-markov`:
+1. Add `hubot-pipe` to your `package.json` with `npm install --save hubot-pipe`:
 
   ```json
     "dependencies": {
-      "hubot-pipe": "~0.0.1"
+      "hubot-pipe": "~0.0.4"
     },
   ```
 2. Require the module in `external-scripts.json`:
