@@ -28,7 +28,11 @@ module.exports = function (robot) {
           context.response.send(results.join(""));
         });
       } catch (e) {
-        next(done);
+        if (e.name === 'SyntaxError') {
+          next(done);
+        } else {
+          throw e;
+        }
       }
     } else {
       next(done);
