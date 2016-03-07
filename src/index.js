@@ -11,21 +11,29 @@ module.exports = function (robot) {
     var message = context.response.message;
 
     if (Messenger.isTextMessage(message) && ! context.response.robot.__hubot_pipe_patched) {
-      var expr = shellParser.parse(message.text);
-      var messenger = new Messenger(message);
-      var capture = new Capture(context.response.robot);
-      var patched = capture.patchedRobot(0);
+      try {
+        var expr = shellParser.parse(message.text);
+        var messenger = new Messenger(message);
+        var capture = new Capture(context.response.robot);
+        var patched = capture.patchedRobot(0);
 
-      expr.evaluate(patched, messenger);
+        expr.evaluate(patched, messenger);
 
-      capture.onComplete(function (err, results) {
-        if (err) {
-          console.error(err);
-          return;
-        };
+        capture.onComplete(function (err, results) {
+          if (err) {
+            console.error(err);
+            return;
+          };
 
-        context.response.send(results.join(""));
-      });
+          context.response.send(results.join(""));
+        });
+      } catch (e) {
+        if (e.name === 'SyntaxError') {
+          next(done);
+        } else {
+          throw e;
+        }
+      }
     } else {
       next(done);
     }
