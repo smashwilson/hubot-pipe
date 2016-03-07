@@ -141,4 +141,14 @@ describe("shellParser", function () {
 
   });
 
+  describe("with parse errors", function () {
+
+    it("doesn't crash", function () {
+      var input = "hubot echo $( unbalanced";
+      var expected = "(Pipe (Command (Part [hubot echo $( unbalanced])))";
+
+      parsesAs(input, expected);
+    });
+  });
+
 });
