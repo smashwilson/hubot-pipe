@@ -25,7 +25,25 @@ module.exports = function (robot) {
             return;
           };
 
-          context.response.send(results.join(""));
+          var accumulated = [];
+          for (var i = 0; i < results.length; i++) {
+            var result = results[i];
+
+            if (typeof result === 'string') {
+              accumulated.push(result);
+            } else {
+              if (accumulated.length > 0) {
+                context.response.send(accumulated.join(""));
+                accumulated = [];
+              }
+
+              context.response.send(result);
+            }
+          }
+
+          if (accumulated.length > 0) {
+            context.response.send(accumulated.join(""));
+          }
         });
       } catch (e) {
         if (e.name === 'SyntaxError') {
