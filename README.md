@@ -1,9 +1,5 @@
 # Hubot Pipe
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/smashwilson/hubot-pipe.svg)](https://greenkeeper.io/)
-
-[![Build Status](https://travis-ci.org/smashwilson/hubot-pipe.svg?branch=master)](https://travis-ci.org/smashwilson/hubot-pipe)
-
 Introduce command piping and subshells to your Hubot commands.
 
 ```
